@@ -1,0 +1,109 @@
+# ------------------------------------------------------------------------------
+# FinTrace AI - Comprehensive .gitignore for React + TypeScript + Vite projects
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# Dependency directories
+# ------------------------------------------------------------------------------
+node_modules/
+.pnp/
+.pnp.js
+
+# ------------------------------------------------------------------------------
+# Build and distribution outputs
+# ------------------------------------------------------------------------------
+dist/
+dist-ssr/
+build/
+out/
+coverage/
+storybook-static/
+
+# Vite caches and generated artifacts
+.vite/
+*.tsbuildinfo
+
+# ------------------------------------------------------------------------------
+# Logs and debug output
+# ------------------------------------------------------------------------------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime / temporary dump files
+*.pid
+*.seed
+*.pid.lock
+*.out
+*.err
+*.stackdump
+
+# ------------------------------------------------------------------------------
+# Environment and local configuration
+# ------------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# Common local-only config variants
+*.local
+*.dev.local
+*.test.local
+*.prod.local
+
+# ------------------------------------------------------------------------------
+# Package manager caches
+# ------------------------------------------------------------------------------
+.npm/
+.pnpm-store/
+.yarn/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# ------------------------------------------------------------------------------
+# Test and tooling caches
+# ------------------------------------------------------------------------------
+.eslintcache
+.stylelintcache
+.cache/
+.parcel-cache/
+
+# Playwright / Cypress / test artifacts (if added later)
+playwright-report/
+test-results/
+cypress/videos/
+cypress/screenshots/
+
+# ------------------------------------------------------------------------------
+# IDE and editor settings
+# ------------------------------------------------------------------------------
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Vim / Emacs
+*.swp
+*.swo
+*~
+
+# ------------------------------------------------------------------------------
+# OS generated files
+# ------------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ------------------------------------------------------------------------------
+# Optional local docs/output files
+# ------------------------------------------------------------------------------
+*.tmp
+*.temp
+
