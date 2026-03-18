@@ -10,6 +10,7 @@ import SettingsPage from '../../pages/settings/SettingsPage';
 import ProfilePage from '../../pages/profile/ProfilePage';
 import LandingPage from '../../pages/landing/LandingPage';
 import IntelligencePage from '../../pages/intelligence/IntelligencePage';
+import SimulationLabPage from '../../pages/simulation/SimulationLabPage';
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ export const router = createBrowserRouter([
       { path: 'investigations', element: <InvestigationsPage /> },
       { path: 'reports', element: <ReportsPage /> },
       { path: 'intelligence', element: <IntelligencePage /> },
+      { path: 'simulation', element: <SimulationLabPage /> },
       { path: 'settings', element: <SettingsPage /> },
       { path: 'profile', element: <ProfilePage /> },
     ],

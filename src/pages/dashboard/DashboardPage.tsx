@@ -10,6 +10,7 @@ import { formatCompactNumber } from '../../utils/formatters';
 import { MOCK_GRAPH_NODES, MOCK_RISK_BREAKDOWNS } from '../../mocks/fixtures/data';
 import type { GraphNode, RiskScoreBreakdown } from '../../types/domain';
 import { SkeletonCard, SkeletonGraph } from '../../components/ui/Skeleton';
+import { TransactionFeed } from '../../components/TransactionFeed';
 import toast from 'react-hot-toast';
 
 const nodesMap: Record<string, GraphNode> = {};
@@ -528,6 +529,9 @@ export default function DashboardPage() {
           </table>
         </div>
       </div>
+
+      {/* Realtime Transaction Feed */}
+      <TransactionFeed />
     </div>
   );
 }

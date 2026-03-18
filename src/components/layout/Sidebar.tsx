@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Bell, Settings, PieChart, ShieldAlert, FileText, BrainCircuit } from 'lucide-react';
+import { LayoutDashboard, Bell, Settings, PieChart, ShieldAlert, FileText, BrainCircuit, FlaskConical } from 'lucide-react';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -7,6 +7,7 @@ const navItems = [
   { to: '/dashboard/investigations', label: 'Investigations', icon: ShieldAlert },
   { to: '/dashboard/reports', label: 'Reports', icon: FileText },
   { to: '/dashboard/intelligence', label: 'Intelligence Lab', icon: BrainCircuit },
+  { to: '/dashboard/simulation', label: 'Simulation Lab', icon: FlaskConical },
 ];
 
 export function Sidebar() {
