@@ -87,6 +87,7 @@ cypress/screenshots/
 !.vscode/extensions.json
 !.vscode/settings.json
 .idea/
+.claude/
 
 # Vim / Emacs
 *.swp

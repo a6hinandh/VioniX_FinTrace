@@ -1,9 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Bell, Keyboard, Sun, Moon, Command, Activity, ChevronRight, X } from 'lucide-react';
+import { Search, Bell, Keyboard, Sun, Moon, Command, Activity, ChevronRight, X, Menu } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTheme } from '../../app/ThemeProvider';
 import { useAppStore } from '../../state/store';
+import { scaleFade } from '../../lib/motion';
 
-export function Header() {
+interface HeaderProps {
+  onMenuClick: () => void;
+}
+
+export function Header({ onMenuClick }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const alerts = useAppStore((s) => s.alerts);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -30,9 +36,18 @@ export function Header() {
   );
 
   return (
-    <header className="h-16 glass flex items-center justify-between px-8 sticky top-0 z-20 transition-colors relative"
+    <header className="h-16 glass flex items-center justify-between px-4 md:px-8 sticky top-0 z-20 transition-colors relative"
       style={{ borderBottom: '1px solid var(--color-border)' }}>
-      <div className="flex-1 max-w-xl">
+      <button
+        onClick={onMenuClick}
+        className="p-2 rounded-lg mr-2 lg:hidden shrink-0"
+        style={{ color: 'var(--color-text-muted)' }}
+        aria-label="Toggle navigation menu"
+      >
+        <Menu className="w-5 h-5" />
+      </button>
+
+      <div className="flex-1 max-w-xl min-w-0">
         <div className="relative group">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors"
             style={{ color: 'var(--color-text-muted)' }} />
@@ -46,14 +61,14 @@ export function Header() {
               color: 'var(--color-text-primary)',
             }}
           />
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono px-1.5 py-0.5 rounded"
+          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono px-1.5 py-0.5 rounded hidden sm:block"
             style={{ color: 'var(--color-text-muted)', background: 'var(--color-surface-0)', border: '1px solid var(--color-border)' }}>
             /
           </kbd>
         </div>
       </div>
 
-      <div className="flex items-center gap-3 ml-4">
+      <div className="flex items-center gap-1 md:gap-3 ml-2 md:ml-4">
         <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-lg"
           style={{ background: 'var(--color-risk-muted)', border: '1px solid var(--color-risk-border)' }}>
           <Activity className="w-3.5 h-3.5" style={{ color: 'var(--color-risk)' }} />
@@ -63,14 +78,14 @@ export function Header() {
         </div>
 
         {/* Environment Badge */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg"
           style={{ background: 'var(--color-warning-muted)', border: '1px solid var(--color-warning-border)' }}>
           <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--color-warning)' }} />
           <span className="text-[11px] font-semibold" style={{ color: 'var(--color-warning)' }}>Mock Feed</span>
         </div>
 
         {/* Live Clock */}
-        <div className="text-xs font-mono tabular-nums" style={{ color: 'var(--color-text-muted)' }}>
+        <div className="hidden sm:block text-xs font-mono tabular-nums" style={{ color: 'var(--color-text-muted)' }}>
           {currentTime.toLocaleTimeString('en-US', { hour12: false })}
         </div>
 
@@ -115,8 +130,14 @@ export function Header() {
         </button>
       </div>
 
+      <AnimatePresence>
       {notificationsOpen && (
-        <div className="absolute right-6 top-[4.2rem] w-[380px] rounded-2xl overflow-hidden animate-scale-in"
+        <motion.div
+          className="absolute right-2 md:right-6 top-[4.2rem] w-[92vw] max-w-[380px] rounded-2xl overflow-hidden"
+          variants={scaleFade}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
           style={{ background: 'var(--color-surface-1)', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-lg)' }}>
           <div className="px-4 py-3 flex items-center justify-between"
             style={{ borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-0)' }}>
@@ -159,8 +180,9 @@ export function Header() {
             Open full triage queue
             <ChevronRight className="w-3.5 h-3.5" />
           </a>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </header>
   );
 }

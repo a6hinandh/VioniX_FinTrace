@@ -1,5 +1,7 @@
 // FinTrace AI — Skeleton Loader Component
 
+import { seededRandom } from '../../utils/risk';
+
 export function Skeleton({ className = '', style }: { className?: string; style?: React.CSSProperties }) {
   return <div className={`skeleton ${className}`} style={style} />;
 }
@@ -17,7 +19,7 @@ export function SkeletonCard() {
       <Skeleton className="h-8 w-20" />
       <div className="flex gap-1 h-6">
         {Array.from({ length: 12 }, (_, i) => (
-          <Skeleton key={i} className="w-[3px] rounded-full" style={{ height: `${30 + Math.random() * 40}%` }} />
+          <Skeleton key={i} className="w-[3px] rounded-full" style={{ height: `${30 + seededRandom(i) * 40}%` }} />
         ))}
       </div>
     </div>

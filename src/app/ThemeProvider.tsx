@@ -17,6 +17,7 @@ const ThemeContext = createContext<ThemeContextType>({
   setTheme: () => {},
 });
 
+// eslint-disable-next-line react-refresh/only-export-components -- hook is intentionally co-located with its Provider/Context
 export function useTheme() {
   return useContext(ThemeContext);
 }
@@ -26,7 +27,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     try {
       const stored = localStorage.getItem('fintrace-theme');
       if (stored === 'light' || stored === 'dark') return stored;
-    } catch {}
+    } catch {
+      // localStorage unavailable (privacy mode, SSR, etc.)
+    }
     return 'dark';
   });
 

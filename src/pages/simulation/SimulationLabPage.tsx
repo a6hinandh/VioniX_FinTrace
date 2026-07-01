@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { Beaker, Play, CheckCircle2, RefreshCw, Sparkles, Radar } from 'lucide-react';
+import { Beaker, Play, Sparkles, Radar } from 'lucide-react';
+import { LottiePlayer as Lottie } from '../../components/ui/LottiePlayer';
 import { useAppStore } from '../../state/store';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import successCheck from '../../assets/lottie/success-check.json';
 
 export default function SimulationLabPage() {
   const injectSimulationAlert = useAppStore((s) => s.injectSimulationAlert);
@@ -55,22 +59,20 @@ export default function SimulationLabPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Scenario Name</label>
-            <input
+            <Input
               value={scenarioName}
               onChange={(e) => setScenarioName(e.target.value)}
-              className="mt-1 w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
-              style={{ background: 'var(--color-surface-0)', border: '1px solid var(--color-border)', color: 'var(--color-text-primary)' }}
+              className="mt-1 w-full"
               required
             />
           </div>
 
           <div>
             <label className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Account IDs</label>
-            <input
+            <Input
               value={accountIds}
               onChange={(e) => setAccountIds(e.target.value)}
-              className="mt-1 w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
-              style={{ background: 'var(--color-surface-0)', border: '1px solid var(--color-border)', color: 'var(--color-text-primary)' }}
+              className="mt-1 w-full"
               required
             />
           </div>
@@ -91,7 +93,9 @@ export default function SimulationLabPage() {
         {showSuccess && (
           <div className="mt-4 p-3 rounded-lg flex items-start gap-2 animate-fade-in"
             style={{ background: 'var(--color-safe-muted)', border: '1px solid var(--color-safe-border)', color: 'var(--color-safe)' }}>
-            <CheckCircle2 className="w-4 h-4 mt-0.5" />
+            <div className="w-8 h-8 -mt-2 -ml-1 shrink-0" aria-hidden="true">
+              <Lottie animationData={successCheck} loop={false} autoplay />
+            </div>
             <div>
               <p className="text-sm font-semibold">Simulation injected successfully</p>
               <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
@@ -102,15 +106,9 @@ export default function SimulationLabPage() {
         )}
 
         <div className="mt-6 flex justify-end">
-          <button
-            type="submit"
-            disabled={isSimulating}
-            className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center gap-2 disabled:opacity-60"
-            style={{ background: 'var(--color-accent)', boxShadow: 'var(--shadow-glow-accent)' }}
-          >
-            {isSimulating ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+          <Button type="submit" variant="primary" loading={isSimulating} icon={<Play className="w-4 h-4" />}>
             {isSimulating ? 'Executing' : 'Run Simulation'}
-          </button>
+          </Button>
         </div>
       </form>
 

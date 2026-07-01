@@ -37,7 +37,7 @@ export function FundFlowGraph({ nodes, edges, highlightedPath = [], className = 
   };
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl ${className}`}
+    <div className={`relative overflow-hidden rounded-2xl aspect-[16/9] ${className}`}
       style={{ background: 'var(--color-surface-0)', border: '1px solid var(--color-border)' }}>
       <div className="absolute inset-0 landing-grid opacity-30 pointer-events-none" />
 
@@ -106,7 +106,7 @@ export function FundFlowGraph({ nodes, edges, highlightedPath = [], className = 
         return (
           <div
             key={node.id}
-            className="absolute -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full border-2 flex flex-col items-center justify-center"
+            className="absolute -translate-x-1/2 -translate-y-1/2 w-10 h-10 sm:w-14 sm:h-14 rounded-full border-2 flex flex-col items-center justify-center"
             style={{
               left: `${node.x}%`,
               top: `${node.y}%`,
@@ -117,8 +117,8 @@ export function FundFlowGraph({ nodes, edges, highlightedPath = [], className = 
               zIndex: highlighted ? 20 : 10,
             }}
           >
-            {highlighted ? <ShieldAlert className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
-            <span className="text-[10px] font-bold font-mono mt-0.5">{node.label}</span>
+            {highlighted ? <ShieldAlert className="w-3 h-3 sm:w-4 sm:h-4" /> : <ShieldCheck className="w-3 h-3 sm:w-4 sm:h-4" />}
+            <span className="text-[8px] sm:text-[10px] font-bold font-mono mt-0.5">{node.label}</span>
           </div>
         );
       })}
@@ -155,7 +155,7 @@ export default function FundFlowDemo() {
         nodes={mockNodes}
         edges={mockEdges}
         highlightedPath={['A', 'B', 'C', 'D']}
-        className="w-full h-72"
+        className="w-full"
       />
     </div>
   );

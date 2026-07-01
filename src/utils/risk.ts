@@ -13,23 +13,22 @@ export function scoreToRiskLevel(score: number): RiskLevel {
 }
 
 /**
- * Get the display color class for a risk level
+ * Get the themed CSS-variable tokens for a risk level (for inline `style`, not Tailwind classes)
  */
 export function riskLevelColor(level: RiskLevel | string): { text: string; bg: string; border: string; dot: string } {
   switch (level) {
     case RiskLevel.CRITICAL:
     case 'critical':
-      return { text: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20', dot: 'bg-red-500' };
     case RiskLevel.HIGH:
     case 'high':
-      return { text: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/20', dot: 'bg-rose-500' };
+      return { text: 'var(--color-risk)', bg: 'var(--color-risk-muted)', border: 'var(--color-risk-border)', dot: 'var(--color-risk)' };
     case RiskLevel.MEDIUM:
     case 'medium':
-      return { text: 'text-amber-500', bg: 'bg-amber-500/10', border: 'border-amber-500/20', dot: 'bg-amber-500' };
+      return { text: 'var(--color-warning)', bg: 'var(--color-warning-muted)', border: 'var(--color-warning-border)', dot: 'var(--color-warning)' };
     case RiskLevel.LOW:
     case 'low':
     default:
-      return { text: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', dot: 'bg-emerald-500' };
+      return { text: 'var(--color-safe)', bg: 'var(--color-safe-muted)', border: 'var(--color-safe-border)', dot: 'var(--color-safe)' };
   }
 }
 

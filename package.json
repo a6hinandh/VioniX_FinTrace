@@ -1,8 +1,25 @@
 {
   "name": "fintrace-ai",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "Graph-based AML and financial crime detection prototype with real-time risk scoring, explainable alerts, and investigation workflows.",
   "type": "module",
+  "author": "a6hinandh",
+  "license": "CC-BY-NC-4.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/a6hinandh/VioniX_FinTrace.git"
+  },
+  "homepage": "https://github.com/a6hinandh/VioniX_FinTrace#readme",
+  "keywords": [
+    "aml",
+    "fraud-detection",
+    "financial-crime",
+    "fintech",
+    "graph-visualization",
+    "react",
+    "typescript"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -12,6 +29,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "framer-motion": "^12.42.2",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.577.0",
     "ogl": "^1.0.11",
     "react": "^19.2.4",
@@ -22,7 +41,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
-    "@tailwindcss/vite": "^4.2.1",
+    "@tailwindcss/vite": "^4.3.2",
     "@types/node": "^24.12.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

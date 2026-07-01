@@ -1,6 +1,11 @@
 import { useMemo, useState } from 'react';
 import { FileText, Calendar, Eye, Download, X, Sparkles, PlusCircle } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useAppStore } from '../../state/store';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { alertStatusToIntent } from '../../utils/badgeIntent';
+import { backdropFade, scaleFade, staggerContainer, staggerItem } from '../../lib/motion';
 
 export default function ReportsPage() {
   const reports = useAppStore((s) => s.reports);
@@ -33,28 +38,23 @@ export default function ReportsPage() {
           </p>
         </div>
 
-        <button
-          onClick={handleGenerate}
-          className="px-4 py-2 rounded-xl text-sm font-semibold text-white flex items-center gap-2"
-          style={{ background: 'var(--color-accent)', boxShadow: 'var(--shadow-glow-accent)' }}
-        >
-          <PlusCircle className="w-4 h-4" />
+        <Button onClick={handleGenerate} variant="primary" icon={<PlusCircle className="w-4 h-4" />}>
           Generate Report
-        </button>
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <motion.div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6" variants={staggerContainer} initial="hidden" animate="visible">
         {[
           { label: 'Total Reports', value: reports.length, color: 'var(--color-accent)' },
           { label: 'Ready / Exported', value: reports.filter((r) => r.status !== 'generating').length, color: 'var(--color-safe)' },
           { label: 'In Generation', value: reports.filter((r) => r.status === 'generating').length, color: 'var(--color-warning)' },
         ].map((metric) => (
-          <div key={metric.label} className="card p-4">
+          <motion.div key={metric.label} variants={staggerItem} className="card p-4">
             <p className="text-xs uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>{metric.label}</p>
             <p className="text-3xl font-extrabold mt-1" style={{ color: metric.color }}>{metric.value}</p>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       <div className="space-y-3">
         {reports.map((report) => (
@@ -76,57 +76,36 @@ export default function ReportsPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase"
-                style={{
-                  background:
-                    report.status === 'generating'
-                      ? 'var(--color-warning-muted)'
-                      : report.status === 'ready'
-                        ? 'var(--color-safe-muted)'
-                        : 'var(--color-accent-muted)',
-                  color:
-                    report.status === 'generating'
-                      ? 'var(--color-warning)'
-                      : report.status === 'ready'
-                        ? 'var(--color-safe)'
-                        : 'var(--color-accent)',
-                  border: `1px solid ${
-                    report.status === 'generating'
-                      ? 'var(--color-warning-border)'
-                      : report.status === 'ready'
-                        ? 'var(--color-safe-border)'
-                        : 'var(--color-accent-border)'
-                  }`,
-                }}
-              >
-                {report.status}
-              </span>
+              <Badge intent={alertStatusToIntent(report.status)}>{report.status}</Badge>
 
-              <button
-                onClick={() => setSelectedReportId(report.id)}
-                className="px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5"
-                style={{ background: 'var(--color-surface-2)', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)' }}
-              >
-                <Eye className="w-3.5 h-3.5" />
+              <Button onClick={() => setSelectedReportId(report.id)} size="sm" icon={<Eye className="w-3.5 h-3.5" />}>
                 View
-              </button>
+              </Button>
 
-              <button
-                className="px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5"
-                style={{ background: 'var(--color-accent-muted)', color: 'var(--color-accent)', border: '1px solid var(--color-accent-border)' }}
-              >
-                <Download className="w-3.5 h-3.5" />
+              <Button variant="primary" size="sm" icon={<Download className="w-3.5 h-3.5" />}
+                style={{ background: 'var(--color-accent-muted)', color: 'var(--color-accent)', border: '1px solid var(--color-accent-border)', boxShadow: 'none' }}>
                 Export
-              </button>
+              </Button>
             </div>
           </div>
         ))}
       </div>
 
+      <AnimatePresence>
       {selectedReport && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-3xl rounded-2xl overflow-hidden animate-scale-in"
-            style={{ background: 'var(--color-surface-1)', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-lg)' }}>
+        <motion.div
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          variants={backdropFade}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+        >
+          <motion.div className="w-full max-w-3xl overflow-hidden"
+            variants={scaleFade}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            style={{ background: 'var(--color-surface-1)', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-lg)', borderRadius: '1.1rem' }}>
             <div className="px-5 py-4 flex items-center justify-between"
               style={{ borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-0)' }}>
               <h2 className="text-sm font-semibold flex items-center gap-2" style={{ color: 'var(--color-text-primary)' }}>
@@ -143,43 +122,44 @@ export default function ReportsPage() {
             </div>
 
             <div className="p-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
-              <div className="rounded-xl p-5" style={{ background: '#fbfbf8', color: '#1a2433', border: '1px solid #e1e6ef' }}>
+              <div className="rounded-xl p-5" style={{ background: 'var(--color-surface-2)', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)' }}>
                 <h3 className="text-xl font-extrabold tracking-tight">Financial Intelligence Evidence Report</h3>
-                <p className="text-xs mt-1 uppercase tracking-wider font-semibold">Confidential Compliance Artifact</p>
+                <p className="text-xs mt-1 uppercase tracking-wider font-semibold" style={{ color: 'var(--color-text-muted)' }}>Confidential Compliance Artifact</p>
 
-                <div className="grid grid-cols-2 gap-4 mt-6 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 text-sm">
                   <div>
-                    <p className="text-xs uppercase tracking-wider font-semibold text-slate-500">Report ID</p>
+                    <p className="text-xs uppercase tracking-wider font-semibold" style={{ color: 'var(--color-text-muted)' }}>Report ID</p>
                     <p className="font-mono font-semibold">{selectedReport.id}</p>
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-wider font-semibold text-slate-500">Case ID</p>
+                    <p className="text-xs uppercase tracking-wider font-semibold" style={{ color: 'var(--color-text-muted)' }}>Case ID</p>
                     <p className="font-mono font-semibold">{selectedReport.caseId}</p>
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-wider font-semibold text-slate-500">Entities</p>
+                    <p className="text-xs uppercase tracking-wider font-semibold" style={{ color: 'var(--color-text-muted)' }}>Entities</p>
                     <p className="font-semibold">{selectedReport.entityCount}</p>
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-wider font-semibold text-slate-500">Transactions</p>
+                    <p className="text-xs uppercase tracking-wider font-semibold" style={{ color: 'var(--color-text-muted)' }}>Transactions</p>
                     <p className="font-semibold">{selectedReport.transactionCount}</p>
                   </div>
                 </div>
 
                 <div className="mt-6">
-                  <p className="text-xs uppercase tracking-wider font-semibold text-slate-500 mb-2">Narrative Summary</p>
+                  <p className="text-xs uppercase tracking-wider font-semibold mb-2" style={{ color: 'var(--color-text-muted)' }}>Narrative Summary</p>
                   <p className="text-sm leading-relaxed">{selectedReport.summary}</p>
                 </div>
 
-                <div className="mt-6 rounded-lg border p-3" style={{ borderColor: '#e1e6ef', background: '#f6f8fc' }}>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Recommended Action</p>
+                <div className="mt-6 rounded-lg border p-3" style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface-3)' }}>
+                  <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Recommended Action</p>
                   <p className="text-sm mt-1">Escalate to compliance officer, freeze high-risk nodes, and attach this package to SAR filing workflow.</p>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 }

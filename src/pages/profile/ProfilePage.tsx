@@ -1,9 +1,13 @@
 // FinTrace AI — Profile Page
 // User profile with activity stats, recent activity, and preferences
 
+import { motion } from 'framer-motion';
 import { useTheme } from '../../app/ThemeProvider';
 import { User, Shield, FileText, Bell, Clock, Sun, Moon, TrendingUp, Award, CheckCircle, Activity } from 'lucide-react';
 import { useAppStore } from '../../state/store';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { staggerContainer, staggerItem } from '../../lib/motion';
 
 export default function ProfilePage() {
   const { theme, toggleTheme } = useTheme();
@@ -15,10 +19,10 @@ export default function ProfilePage() {
   const readyReports = reports.filter((r) => r.status === 'ready' || r.status === 'exported').length;
 
   const stats = [
-    { icon: Bell, label: 'Alerts Triaged', value: resolvedAlerts || 12, color: 'text-amber-400', bg: 'bg-amber-500/10' },
-    { icon: Shield, label: 'Cases Reviewed', value: cases.length, color: 'text-amber-400', bg: 'bg-amber-500/10' },
-    { icon: FileText, label: 'Reports Generated', value: readyReports || 8, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-    { icon: TrendingUp, label: 'Risk Assessments', value: 47, color: 'text-amber-400', bg: 'bg-amber-500/10' },
+    { icon: Bell, label: 'Alerts Triaged', value: resolvedAlerts || 12, color: 'var(--color-accent)', bg: 'var(--color-accent-muted)' },
+    { icon: Shield, label: 'Cases Reviewed', value: cases.length, color: 'var(--color-accent)', bg: 'var(--color-accent-muted)' },
+    { icon: FileText, label: 'Reports Generated', value: readyReports || 8, color: 'var(--color-safe)', bg: 'var(--color-safe-muted)' },
+    { icon: TrendingUp, label: 'Risk Assessments', value: 47, color: 'var(--color-accent)', bg: 'var(--color-accent-muted)' },
   ];
 
   const recentActivity = [
@@ -47,26 +51,14 @@ export default function ProfilePage() {
         <div className="space-y-6">
           {/* Profile Card */}
           <div className="card p-6 text-center">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center mx-auto mb-4 text-2xl font-bold text-white shadow-lg">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold text-white shadow-lg" style={{ background: 'var(--gradient-accent)' }}>
               JD
             </div>
             <h2 className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>Jane Doe</h2>
             <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Senior Financial Crime Analyst</p>
             <div className="flex items-center justify-center gap-2 mt-3">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold" style={{
-                background: 'var(--color-safe-muted)',
-                color: 'var(--color-safe)',
-                border: '1px solid var(--color-safe-border)',
-              }}>
-                <CheckCircle className="w-3 h-3 inline mr-1" />Active
-              </span>
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold" style={{
-                background: 'var(--color-accent-muted)',
-                color: 'var(--color-accent)',
-                border: '1px solid var(--color-accent-border)',
-              }}>
-                <Award className="w-3 h-3 inline mr-1" />Level 3 Clearance
-              </span>
+              <Badge intent="safe" icon={<CheckCircle className="w-3 h-3" />}>Active</Badge>
+              <Badge intent="accent" icon={<Award className="w-3 h-3" />}>Level 3 Clearance</Badge>
             </div>
 
             {/* Info Grid */}
@@ -96,17 +88,13 @@ export default function ProfilePage() {
                   <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>Theme</p>
                   <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Toggle dark / light mode</p>
                 </div>
-                <button
+                <Button
                   onClick={toggleTheme}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
-                  style={{
-                    background: 'var(--color-surface-3)',
-                    color: 'var(--color-text-primary)',
-                    border: '1px solid var(--color-border)',
-                  }}
+                  size="sm"
+                  icon={theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
                 >
-                  {theme === 'dark' ? <><Sun className="w-3.5 h-3.5" /> Light</> : <><Moon className="w-3.5 h-3.5" /> Dark</>}
-                </button>
+                  {theme === 'dark' ? 'Light' : 'Dark'}
+                </Button>
               </div>
             </div>
           </div>
@@ -115,17 +103,17 @@ export default function ProfilePage() {
         {/* Right Column: Stats + Activity */}
         <div className="lg:col-span-2 space-y-6">
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-4" variants={staggerContainer} initial="hidden" animate="visible">
             {stats.map((s) => (
-              <div key={s.label} className="card p-4">
-                <div className={`w-10 h-10 rounded-xl ${s.bg} flex items-center justify-center mb-3`}>
-                  <s.icon className={`w-5 h-5 ${s.color}`} />
+              <motion.div key={s.label} variants={staggerItem} className="card p-4">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: s.bg }}>
+                  <s.icon className="w-5 h-5" style={{ color: s.color }} />
                 </div>
                 <p className="text-2xl font-bold" style={{ color: 'var(--color-text-primary)' }}>{s.value}</p>
                 <p className="text-[11px] font-medium" style={{ color: 'var(--color-text-muted)' }}>{s.label}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Recent Activity */}
           <div className="card overflow-hidden">

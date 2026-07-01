@@ -1,6 +1,14 @@
 # FinTrace AI
 
+[![CI](https://github.com/a6hinandh/VioniX_FinTrace/actions/workflows/ci.yml/badge.svg)](https://github.com/a6hinandh/VioniX_FinTrace/actions/workflows/ci.yml)
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](LICENSE)
+![React](https://img.shields.io/badge/React-19-2f6feb)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-2f6feb)
+![Vite](https://img.shields.io/badge/Vite-8-2f6feb)
+
 Intelligent financial crime detection prototype focused on AML workflows, graph-driven risk analysis, and analyst decision support.
+
+**Live Demo:** _deploy with Vercel (see `vercel.json`) and add your URL here_
 
 ## Overview
 
@@ -76,16 +84,23 @@ Presentation pages use shared state and deterministic fixtures:
 - React Router 7
 - Lucide React
 - React Hot Toast
+- Framer Motion
+
+## Design System
+
+FinTrace AI ships a token-driven Sapphire theme with full dark/light support (`src/index.css`). Every surface, accent, and semantic risk color (risk/warning/safe/info) is defined as a CSS custom property, so components stay consistent without hardcoded hex values. Toggle themes from the navbar or header — the choice persists in `localStorage`.
 
 ## Repository Structure
 
 ```text
 src/
-	app/                  # App providers and routing
-	components/           # Layout and UI primitives
+	app/                  # App providers, theming, and routing
+	assets/               # Lottie animations and static media
+	components/           # Layout and UI primitives (Button, Badge, Input, graphs)
 	hooks/                # Realtime feed and keyboard utilities
+	lib/                  # Shared animation/motion variants
 	mocks/fixtures/       # Deterministic AML scenario data
-	pages/                # Dashboard, alerts, investigations, reports, settings, profile, intelligence
+	pages/                # Landing, dashboard, alerts, investigations, reports, settings, profile, intelligence
 	services/             # Mock API client and telemetry helpers
 	state/                # Zustand store and state actions
 	types/                # Domain and API TypeScript types

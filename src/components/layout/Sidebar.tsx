@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { LayoutDashboard, Bell, Settings, PieChart, ShieldAlert, FileText, BrainCircuit, FlaskConical } from 'lucide-react';
+import { backdropFade, slideFromLeft } from '../../lib/motion';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -10,13 +12,13 @@ const navItems = [
   { to: '/dashboard/simulation', label: 'Simulation Lab', icon: FlaskConical },
 ];
 
-export function Sidebar() {
+function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <aside className="w-64 flex flex-col h-screen font-sans shrink-0 glass"
-      style={{ borderRight: '1px solid var(--color-border)', background: 'var(--color-surface-1)' }}>
+    <>
       <div className="h-16 flex items-center px-6" style={{ borderBottom: '1px solid var(--color-border)' }}>
         <NavLink to="/dashboard" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-[10px] bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+          <div className="w-8 h-8 rounded-[10px] flex items-center justify-center"
+            style={{ background: 'var(--gradient-accent)', boxShadow: 'var(--shadow-glow-accent)' }}>
             <PieChart className="w-4 h-4 text-white" />
           </div>
           <span className="text-xl font-bold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>FinTrace AI</span>
@@ -34,6 +36,7 @@ export function Sidebar() {
             key={item.to}
             to={item.to}
             end={item.to === '/dashboard'}
+            onClick={onNavigate}
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-all ${
                 isActive
@@ -62,6 +65,7 @@ export function Sidebar() {
 
         <NavLink
           to="/dashboard/settings"
+          onClick={onNavigate}
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all"
           style={({ isActive }) => ({
             background: isActive ? 'var(--color-accent-muted)' : undefined,
@@ -75,12 +79,14 @@ export function Sidebar() {
 
         <NavLink
           to="/dashboard/profile"
+          onClick={onNavigate}
           className="mt-4 flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors"
           style={({ isActive }) => ({
             background: isActive ? 'var(--color-accent-muted)' : undefined,
           })}
         >
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shrink-0 text-sm font-semibold text-white shadow-md">
+          <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-sm font-semibold text-white shadow-md"
+            style={{ background: 'var(--gradient-accent)' }}>
             JD
           </div>
           <div className="flex-1 min-w-0">
@@ -89,6 +95,54 @@ export function Sidebar() {
           </div>
         </NavLink>
       </div>
-    </aside>
+    </>
+  );
+}
+
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  return (
+    <>
+      {/* Desktop — always-visible static sidebar */}
+      <aside
+        className="hidden lg:flex w-64 h-screen flex-col shrink-0 glass"
+        style={{ borderRight: '1px solid var(--color-border)', background: 'var(--color-surface-1)' }}
+      >
+        <SidebarContent />
+      </aside>
+
+      {/* Mobile — animated drawer */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+            variants={backdropFade}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            onClick={onClose}
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.aside
+            className="fixed inset-y-0 left-0 z-40 w-64 h-screen flex flex-col shrink-0 glass lg:hidden"
+            style={{ borderRight: '1px solid var(--color-border)', background: 'var(--color-surface-1)' }}
+            variants={slideFromLeft}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <SidebarContent onNavigate={onClose} />
+          </motion.aside>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

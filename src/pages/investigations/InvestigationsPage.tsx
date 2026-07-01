@@ -2,40 +2,15 @@ import { useMemo, useState } from 'react';
 import { ShieldAlert, Clock3, MessageSquare, UserRound, ArrowUpRight, CheckCircle2 } from 'lucide-react';
 import { useAppStore } from '../../state/store';
 import { CaseStatus, type InvestigationCase } from '../../types/domain';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { caseStatusToIntent } from '../../utils/badgeIntent';
+import { Input } from '../../components/ui/Input';
 
 const ANALYSTS = ['Jane Doe', 'John Smith', 'Alex Chen', 'Sarah Ali', 'Marcus Ray'];
 
 function statusLabel(status: string) {
   return status.replace(/_/g, ' ');
-}
-
-function statusStyle(status: string) {
-  if (status === CaseStatus.ESCALATED) {
-    return {
-      bg: 'var(--color-risk-muted)',
-      border: 'var(--color-risk-border)',
-      text: 'var(--color-risk)',
-    };
-  }
-  if (status === CaseStatus.IN_PROGRESS) {
-    return {
-      bg: 'var(--color-warning-muted)',
-      border: 'var(--color-warning-border)',
-      text: 'var(--color-warning)',
-    };
-  }
-  if (status === CaseStatus.CLOSED) {
-    return {
-      bg: 'var(--color-safe-muted)',
-      border: 'var(--color-safe-border)',
-      text: 'var(--color-safe)',
-    };
-  }
-  return {
-    bg: 'var(--color-accent-muted)',
-    border: 'var(--color-accent-border)',
-    text: 'var(--color-accent)',
-  };
 }
 
 export default function InvestigationsPage() {
@@ -98,16 +73,12 @@ export default function InvestigationsPage() {
           <div className="px-5 py-4 flex items-center justify-between"
             style={{ borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-1)' }}>
             <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Open Cases</p>
-            <span className="px-2 py-0.5 rounded-full text-[11px] font-bold"
-              style={{ background: 'var(--color-accent-muted)', color: 'var(--color-accent)', border: '1px solid var(--color-accent-border)' }}>
-              {openCases.length}
-            </span>
+            <Badge intent="accent">{openCases.length}</Badge>
           </div>
 
-          <div className="p-3 space-y-2 max-h-[34rem] overflow-y-auto custom-scrollbar" style={{ background: 'var(--color-surface-0)' }}>
+          <div className="p-3 space-y-2 max-h-[60vh] md:max-h-[34rem] overflow-y-auto custom-scrollbar" style={{ background: 'var(--color-surface-0)' }}>
             {cases.map((caseItem) => {
               const selected = caseItem.id === selectedCaseId;
-              const st = statusStyle(caseItem.status);
               return (
                 <button
                   key={caseItem.id}
@@ -121,10 +92,7 @@ export default function InvestigationsPage() {
                 >
                   <div className="flex items-center justify-between gap-2 mb-1.5">
                     <p className="font-mono text-xs font-bold" style={{ color: 'var(--color-text-primary)' }}>{caseItem.id}</p>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
-                      style={{ background: st.bg, border: `1px solid ${st.border}`, color: st.text }}>
-                      {statusLabel(caseItem.status)}
-                    </span>
+                    <Badge intent={caseStatusToIntent(caseItem.status)}>{statusLabel(caseItem.status)}</Badge>
                   </div>
                   <p className="text-xs line-clamp-2" style={{ color: 'var(--color-text-secondary)' }}>{caseItem.summary}</p>
                   <div className="mt-2 flex items-center justify-between text-[11px]" style={{ color: 'var(--color-text-muted)' }}>
@@ -182,24 +150,15 @@ export default function InvestigationsPage() {
                       <div>
                         <p className="text-xs mb-1" style={{ color: 'var(--color-text-muted)' }}>Analyst Comment</p>
                         <div className="flex gap-2">
-                          <input
+                          <Input
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
                             placeholder="Add investigation note..."
-                            className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none"
-                            style={{
-                              background: 'var(--color-surface-2)',
-                              border: '1px solid var(--color-border)',
-                              color: 'var(--color-text-primary)',
-                            }}
+                            className="w-full"
                           />
-                          <button
-                            onClick={handleAddComment}
-                            className="px-3 py-2 rounded-lg text-xs font-semibold"
-                            style={{ background: 'var(--color-accent)', color: '#fff' }}
-                          >
+                          <Button onClick={handleAddComment} variant="primary" size="sm">
                             Add
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -211,25 +170,18 @@ export default function InvestigationsPage() {
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {activeCase.entityIds.map((entity) => (
-                        <span key={entity} className="px-2 py-0.5 rounded-full text-xs font-semibold"
-                          style={{ background: 'var(--color-accent-muted)', color: 'var(--color-accent)', border: '1px solid var(--color-accent-border)' }}>
-                          {entity}
-                        </span>
+                        <Badge key={entity} intent="accent" size="md">{entity}</Badge>
                       ))}
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <button onClick={handleEscalate} className="py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2"
-                      style={{ background: 'var(--color-risk-muted)', color: 'var(--color-risk)', border: '1px solid var(--color-risk-border)' }}>
-                      <ArrowUpRight className="w-4 h-4" />
+                    <Button onClick={handleEscalate} variant="danger" icon={<ArrowUpRight className="w-4 h-4" />}>
                       Escalate
-                    </button>
-                    <button onClick={handleClose} className="py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2"
-                      style={{ background: 'var(--color-safe-muted)', color: 'var(--color-safe)', border: '1px solid var(--color-safe-border)' }}>
-                      <CheckCircle2 className="w-4 h-4" />
+                    </Button>
+                    <Button onClick={handleClose} variant="success" icon={<CheckCircle2 className="w-4 h-4" />}>
                       Close Case
-                    </button>
+                    </Button>
                   </div>
                 </div>
 
@@ -239,7 +191,7 @@ export default function InvestigationsPage() {
                     <Clock3 className="w-3.5 h-3.5" />
                     Audit Trail
                   </p>
-                  <div className="space-y-2 max-h-[25rem] overflow-y-auto custom-scrollbar pr-1">
+                  <div className="space-y-2 max-h-[40vh] md:max-h-[25rem] overflow-y-auto custom-scrollbar pr-1">
                     {activeCase.auditTrail.slice().reverse().map((entry) => (
                       <div key={entry.id} className="rounded-lg p-3"
                         style={{ background: 'var(--color-surface-1)', border: '1px solid var(--color-border)' }}>

@@ -9,8 +9,13 @@ import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { formatCompactNumber } from '../../utils/formatters';
 import { MOCK_GRAPH_NODES, MOCK_RISK_BREAKDOWNS } from '../../mocks/fixtures/data';
 import type { GraphNode, RiskScoreBreakdown } from '../../types/domain';
+import { motion } from 'framer-motion';
 import { SkeletonCard, SkeletonGraph } from '../../components/ui/Skeleton';
 import { TransactionFeed } from '../../components/TransactionFeed';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { riskLevelToIntent, alertStatusToIntent } from '../../utils/badgeIntent';
+import { staggerContainer, staggerItem } from '../../lib/motion';
 import toast from 'react-hot-toast';
 
 const nodesMap: Record<string, GraphNode> = {};
@@ -152,24 +157,27 @@ export default function DashboardPage() {
             Monitoring {formatCompactNumber(liveFeed.transactionsToday)} entities · {liveFeed.throughputPerSec.toLocaleString()} txn/s
           </p>
         </div>
-        <button
+        <Button
           onClick={handleHighlightToggle}
-          className="px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2"
-          style={{
-            background: isGraphHighlighted ? 'var(--color-risk-muted)' : 'var(--color-surface-2)',
-            color: isGraphHighlighted ? 'var(--color-risk)' : 'var(--color-text-secondary)',
-            border: `1px solid ${isGraphHighlighted ? 'var(--color-risk-border)' : 'var(--color-border)'}`,
-            boxShadow: isGraphHighlighted ? 'var(--shadow-glow-risk)' : 'none',
-          }}
+          icon={isGraphHighlighted ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          style={isGraphHighlighted ? {
+            background: 'var(--color-risk-muted)', color: 'var(--color-risk)',
+            border: '1px solid var(--color-risk-border)', boxShadow: 'var(--shadow-glow-risk)',
+          } : undefined}
         >
-          {isGraphHighlighted ? <><EyeOff className="w-4 h-4" /> Disable Highlight</> : <><Eye className="w-4 h-4" /> Highlight Suspicious Path</>}
-        </button>
+          {isGraphHighlighted ? 'Disable Highlight' : 'Highlight Suspicious Path'}
+        </Button>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
         {stats.map((stat, i) => (
-          <div key={i} className="card p-6 group relative overflow-hidden animate-fade-in-up" style={{ animationDelay: `${i * 0.05}s`, animationFillMode: 'both' }}>
+          <motion.div key={i} variants={staggerItem} className="card p-6 group relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-[80px] opacity-10 pointer-events-none transform translate-x-1/2 -translate-y-1/2 group-hover:opacity-20 transition-opacity"
               style={{ background: stat.color }} />
             <div className="flex items-center justify-between mb-4 relative z-10">
@@ -196,9 +204,9 @@ export default function DashboardPage() {
                 })}
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       <div className="card p-5 mb-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 animate-fade-in-up">
         <div>
@@ -217,14 +225,9 @@ export default function DashboardPage() {
           <span className="pill px-3 py-1.5 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
             {simulationMode ? 'Simulation mode active' : 'Simulation mode idle'}
           </span>
-          <button
-            onClick={handleThreatPulse}
-            className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all flex items-center gap-2"
-            style={{ background: 'var(--color-accent)', boxShadow: 'var(--shadow-glow-accent)' }}
-          >
-            <Zap className="w-4 h-4" />
+          <Button onClick={handleThreatPulse} variant="primary" icon={<Zap className="w-4 h-4" />}>
             Inject Threat Pulse
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -251,7 +254,7 @@ export default function DashboardPage() {
               ))}
             </div>
           </div>
-          <div className="flex-1 relative min-h-[350px] flex items-center justify-center p-8" style={{ background: 'var(--color-surface-0)' }}>
+          <div className="flex-1 relative min-h-[350px] flex items-center justify-center p-4 sm:p-8 overflow-x-auto" style={{ background: 'var(--color-surface-0)' }}>
             {/* Grid background */}
             <div className="absolute inset-0 landing-grid opacity-30 pointer-events-none" style={{ maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, #000 70%, transparent 100%)' }} />
             <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top-right, var(--color-accent-muted), transparent, var(--color-safe-muted))' }} />
@@ -291,7 +294,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Graph Nodes */}
-            <div className="relative w-full max-w-2xl h-64 flex items-center justify-between px-8 z-10">
+            <div className="relative w-full max-w-2xl min-w-[500px] h-64 flex items-center justify-between px-8 z-10">
               <GraphNodeComponent node={nodesMap['A123']} selectedId={selectedGraphNode} onClick={handleNodeClick} color="var(--color-safe)" />
               <GraphEdgeComponent amount="$45K" suspicious={false} isHighlighted={isGraphHighlighted} flowReplay={flowReplay} />
               <GraphNodeComponent node={nodesMap['B456']} selectedId={selectedGraphNode} onClick={handleNodeClick} color="var(--color-warning)" />
@@ -328,14 +331,9 @@ export default function DashboardPage() {
                 <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--color-text-muted)' }}>Selected Entity</p>
                 <div className="flex items-center gap-2">
                   <div className="font-mono text-2xl font-bold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>{activeData.id}</div>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold"
-                    style={{
-                      background: activeData.riskLevel === 'high' ? 'var(--color-risk-muted)' : activeData.riskLevel === 'medium' ? 'var(--color-warning-muted)' : 'var(--color-safe-muted)',
-                      color: activeData.riskLevel === 'high' ? 'var(--color-risk)' : activeData.riskLevel === 'medium' ? 'var(--color-warning)' : 'var(--color-safe)',
-                      border: `1px solid ${activeData.riskLevel === 'high' ? 'var(--color-risk-border)' : activeData.riskLevel === 'medium' ? 'var(--color-warning-border)' : 'var(--color-safe-border)'}`,
-                    }}>
+                  <Badge intent={riskLevelToIntent(activeData.riskLevel)}>
                     {activeData.riskLevel === 'high' ? 'High Risk' : activeData.riskLevel === 'medium' ? 'Monitored' : 'Verified'}
-                  </span>
+                  </Badge>
                 </div>
               </div>
             </div>
@@ -443,17 +441,18 @@ export default function DashboardPage() {
 
             {/* Actions */}
             <div className="mt-auto grid grid-cols-2 gap-3">
-              <button onClick={handleDismissAlert} className="py-2.5 rounded-lg text-sm font-semibold transition-all"
+              <Button onClick={handleDismissAlert}
                 style={{ background: 'var(--color-surface-0)', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)' }}>
                 {activeData.riskLevel === 'high' ? 'Dismiss Alert' : 'Log Details'}
-              </button>
-              <button onClick={handleFreezeAccount} className="py-2.5 rounded-lg text-sm font-semibold text-white transition-all flex items-center justify-center gap-2"
+              </Button>
+              <Button onClick={handleFreezeAccount}
                 style={{
                   background: activeData.riskLevel === 'high' ? 'var(--color-risk)' : 'var(--color-accent)',
+                  color: '#fff',
                   boxShadow: activeData.riskLevel === 'high' ? 'var(--shadow-glow-risk)' : 'var(--shadow-glow-accent)',
                 }}>
                 {activeData.riskLevel === 'high' ? 'Freeze Account' : 'Monitor Target'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -503,22 +502,10 @@ export default function DashboardPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="px-2.5 py-1 rounded-full text-xs font-bold" style={{
-                      background: alert.riskLevel === 'high' ? 'var(--color-risk-muted)' : alert.riskLevel === 'medium' ? 'var(--color-warning-muted)' : 'var(--color-safe-muted)',
-                      color: alert.riskLevel === 'high' ? 'var(--color-risk)' : alert.riskLevel === 'medium' ? 'var(--color-warning)' : 'var(--color-safe)',
-                      border: `1px solid ${alert.riskLevel === 'high' ? 'var(--color-risk-border)' : alert.riskLevel === 'medium' ? 'var(--color-warning-border)' : 'var(--color-safe-border)'}`,
-                    }}>
-                      {alert.riskScore}
-                    </span>
+                    <Badge intent={riskLevelToIntent(alert.riskLevel)} size="md">{alert.riskScore}</Badge>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider" style={{
-                      background: alert.status === 'new' ? 'var(--color-info-muted)' : alert.status === 'reviewing' ? 'var(--color-warning-muted)' : alert.status === 'escalated' ? 'var(--color-risk-muted)' : 'var(--color-surface-3)',
-                      color: alert.status === 'new' ? 'var(--color-info)' : alert.status === 'reviewing' ? 'var(--color-warning)' : alert.status === 'escalated' ? 'var(--color-risk)' : 'var(--color-text-muted)',
-                      border: `1px solid ${alert.status === 'new' ? 'var(--color-info-border)' : alert.status === 'reviewing' ? 'var(--color-warning-border)' : alert.status === 'escalated' ? 'var(--color-risk-border)' : 'var(--color-border)'}`,
-                    }}>
-                      {alert.status}
-                    </span>
+                    <Badge intent={alertStatusToIntent(alert.status)}>{alert.status}</Badge>
                   </td>
                   <td className="px-6 py-4 text-right font-medium" style={{ color: 'var(--color-text-muted)' }}>
                     {new Date(alert.timestamp).toLocaleTimeString()}

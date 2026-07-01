@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { Settings, ToggleLeft, ToggleRight, Database, Server, Shield, Zap, Activity, Play, Square } from 'lucide-react';
 import { useAppStore } from '../../state/store';
 import toast from 'react-hot-toast';
+import { Button } from '../../components/ui/Button';
 
 export default function SettingsPage() {
   const simulationMode = useAppStore((s) => s.simulationMode);
@@ -72,7 +73,7 @@ export default function SettingsPage() {
               Enable simulation mode to inject live alerts, accelerate transaction counters, and demonstrate the platform's real-time capabilities.
             </p>
             <div className="p-4 rounded-xl" style={{ background: 'var(--color-surface-0)', border: '1px solid var(--color-border)' }}>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center items-start justify-between gap-3">
                 <div className="flex items-center gap-3">
                   {simulationMode ? (
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center animate-pulse" style={{ background: 'var(--color-safe-muted)', color: 'var(--color-safe)' }}><Play className="w-5 h-5" /></div>
@@ -84,15 +85,13 @@ export default function SettingsPage() {
                     <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{simulationMode ? 'Injecting alerts every 8 seconds' : 'Click to start demo mode'}</p>
                   </div>
                 </div>
-                <button onClick={handleSimulationToggle}
-                  className="px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all"
-                  style={{
-                    background: simulationMode ? 'var(--color-risk-muted)' : 'var(--color-safe)',
-                    color: simulationMode ? 'var(--color-risk)' : '#fff',
-                    border: simulationMode ? '1px solid var(--color-risk-border)' : 'none',
-                  }}>
-                  {simulationMode ? <><Square className="w-4 h-4" /> Stop</> : <><Play className="w-4 h-4" /> Start Simulation</>}
-                </button>
+                <Button
+                  onClick={handleSimulationToggle}
+                  variant={simulationMode ? 'danger' : 'success'}
+                  icon={simulationMode ? <Square className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                >
+                  {simulationMode ? 'Stop' : 'Start Simulation'}
+                </Button>
               </div>
             </div>
           </div>
