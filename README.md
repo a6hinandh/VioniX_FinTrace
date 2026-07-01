@@ -8,7 +8,6 @@
 
 Intelligent financial crime detection prototype focused on AML workflows, graph-driven risk analysis, and analyst decision support.
 
-**Live Demo:** _deploy with Vercel (see `vercel.json`) and add your URL here_
 
 > **Project status: concept prototype, not production-ready.** FinTrace AI is a frontend-only proof of concept. There is no server side — no real backend, database, authentication, or detection engine. All transactions, alerts, risk scores, and graphs are generated from deterministic mock fixtures in `src/mocks/fixtures`. Treat every number and workflow in this repo as an illustration of the product idea, not a working AML system.
 
@@ -174,4 +173,4 @@ This project is licensed under the Creative Commons Attribution-NonCommercial 4.
 - License file: `LICENSE`
 - Official license link: https://creativecommons.org/licenses/by-nc/4.0/
 
-Copyright (c) 2025 a6hinandh
+Copyright (c) 2026 a6hinandh
